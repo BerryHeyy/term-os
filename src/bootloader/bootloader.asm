@@ -9,19 +9,19 @@ bits 16
 jmp short start
 nop
 
-bdb_oem:					db "MSWIN4.1"
-bdb_bytes_per_sector:		dw 512
-bdb_sectors_per_cluster:	db 1
-bdb_reserved_sectors:		dw 1
-bdb_fat_count:				db 2
-bdb_dir_entries_count:		dw 0e0h
-bdb_total_sectors:			dw 2880
-bdb_media_descriptor_type:	db 0f0h
-bdb_sectors_per_fat:		dw 9
-bdb_sectors_per_track:		dw 18
-bdb_heads:					dw 2
-bdb_hidden_sectors:			dd 0
-bdb_large_sector_count:		dd 0
+bpb_oem:					db "MSWIN4.1"
+bpb_bytes_per_sector:		dw 512
+bpb_sectors_per_cluster:	db 1
+bpb_reserved_sectors:		dw 1
+bpb_fat_count:				db 2
+bpb_dir_entries_count:		dw 0e0h
+bpb_total_sectors:			dw 2880
+bpb_media_descriptor_type:	db 0f0h
+bpb_sectors_per_fat:		dw 9
+bpb_sectors_per_track:		dw 18
+bpb_heads:					dw 2
+bpb_hidden_sectors:			dd 0
+bpb_large_sector_count:		dd 0
 
 ; Extended boot record.
 ebr_drive_number:			db 0
@@ -118,13 +118,13 @@ lba_to_chs:
 	push dx
 
 	xor dx, dx							; dx = 0.
-	div word [bdb_sectors_per_track]	; ax = LBA / sectors_per_track
+	div word [bpb_sectors_per_track]	; ax = LBA / sectors_per_track
 										; dx = LBA % sectors_per_track
 	inc dx								; dx = (LBA % sectors_per_track) + 1 = sector
 	mov cx, dx							; cx = sector
 
 	xor dx, dx							; dx = 0
-	div word [bdb_heads]				; ax = (LBA / sectors_per_track) / heads = cylinder
+	div word [bpb_heads]				; ax = (LBA / sectors_per_track) / heads = cylinder
 										; ax = (LBA / sectors_per_track) % heads = head
 	
 	mov dh, dl							; dh = head
